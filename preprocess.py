@@ -22,8 +22,6 @@ import nltk
 import math
 from nltk.corpus import stopwords
 stop_words = set(stopwords.words('english'))
-# reload(sys)
-# sys.setdefaultencoding('utf-8')
 from nltk.tokenize import sent_tokenize
 
 def inverse_document_frequencies(tokenized_documents):
@@ -34,7 +32,6 @@ def inverse_document_frequencies(tokenized_documents):
             all_tokens_set[w] = 1
     print("here")
     idf_values = {}
-    # all_tokens_set = set([item for sublist in tokenized_documents for item in sublist])
     print(len(all_tokens_set) * len(tokenized_documents))
 
     dict_token_in_docs = {}
@@ -46,23 +43,14 @@ def inverse_document_frequencies(tokenized_documents):
     for w in dict_token_in_docs:
         cnt_doc_contain_token = dict_token_in_docs[w]
         idf_values[w] = 1 + math.log(len(tokenized_documents) / (cnt_doc_contain_token))
-    print("DONE")
-    # for tkn in all_tokens_set:
-    #     print("Token: ", tkn)
-    #     cnt_doc_contain_token = 0
-    #     for url, doc in tokenized_documents.iteritems():
-    #         if tkn in doc:
-    #             cnt_doc_contain_token += 1
-    #     # contains_token = map(lambda doc: tkn in doc, tokenized_documents)
-    #     idf_values[tkn] = 1 + math.log(len(tokenized_documents) / (cnt_doc_contain_token))
+    print("Ok Done")
     return idf_values
 
 
 def compute_tfidf(dict_documents):
     print("Starting computing tfidf....: ", len(dict_documents))
-    # tokenized_documents = [tokenize(d) for d in documents]
     idf_all_vocab = inverse_document_frequencies(dict_documents)
-    print("ending inverse....")
+    print("End")
     # print(idf_all_vocab.keys()[5])
     tfidf_for_words = {}
     list_tfidf_in_all_documents = {}
@@ -72,17 +60,7 @@ def compute_tfidf(dict_documents):
             tf = document[w]
             tfidf_value_of_this_term_in_this_doc = tf * idf_all_vocab[w]
             list_tfidf_in_all_documents[w].append(tfidf_value_of_this_term_in_this_doc)
-        # doc_tfidf = {}
-        # # print(document)
-        # for term in idf_all_vocab.keys():
-        #     tf = document.get(term, 0)
-        #     # print(tf)
-        #     # assert term not in list_tfidf_in_all_documents
-        #     list_tfidf_in_all_documents[term] = list_tfidf_in_all_documents.get(term, [])
-        #     tfidf_value_of_this_term_in_this_doc = tf * idf_all_vocab[term]
-        #     list_tfidf_in_all_documents[term].append(tfidf_value_of_this_term_in_this_doc)
-        #     # print(list_tfidf_in_all_documents[term])
-
+            
     mean_tfidf_of_tokens = {}
     for token, list_tfidf in list_tfidf_in_all_documents.iteritems():
         # print(list_tfidf)
@@ -126,17 +104,14 @@ def process_urls_content(url_content_folder, parent):
                     ll.append(x)
                 except:
                     pass
-            # print(ll)
             line = ''.join(ll)
-            # line = line.encode('utf-8')
 
             line = line.lower().strip()
             lines.append(line + " ")
         all = ' '.join(lines)
         tokens = nltk.word_tokenize(all)
         tokens = [word for word in tokens if word.isalpha() and word not in stop_words and len(word) >= 2]
-        # print(tokens)
-        #remove stop words first to reduce complexity:
+        
         doc_dict = {}
         for t in tokens:
             doc_dict[t] = doc_dict.get(t, 0) + 1
@@ -296,20 +271,7 @@ def divide_dataset_into_5parts(infolder= 'sentences_tokenized', outfolder='train
             dest = '%s/%s' % (test_folder, name)
             copyfile(src, dest)
 
-def process_wordcloud():
-    fin = open('out_top_16K_words_file.txt', 'r')
-    fout = open('top16K_words.csv', 'w')
-    fout.write('idx,word,tfidf\n')
-    for line in fin:
-        idx, w, vl = line.split()
-        fout.write('%s,%s,%s\n' % (idx, w, vl))
 
-
-def genPathToRemove():
-    base = 'hadoop fs -rm -R /user/nkvo/twitter_data/GeoData/2017/%s/%2d/@eaDir'
-    for i in range(1, 13):
-        for j in range(1, 32):
-            print 'hadoop fs -rm -R /user/nkvo/twitter_data/GeoData/2017/%02d/%02d/@eaDir' % (i, j)
 
 
 if __name__ == '__main__':
