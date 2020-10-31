@@ -11,5 +11,3 @@ models to detect fake news based on the content of the article itself.
 # Dataset
 We get the ground truth data from [kaggle](https://www.kaggle.com/arminehn/rumor-citation/data#). We only use Snopes URLs since the labels of each news were clearly presented. Only "true" or "false" labels were kept. We randomly select 281 true news and 281 false news and crawl the Snope website for additional content.
 
-# Phases
-- Right now we have preprocessed the dataset and prepared it for training and testing our models.
